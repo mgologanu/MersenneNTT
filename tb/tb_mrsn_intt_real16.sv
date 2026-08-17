@@ -1,0 +1,150 @@
+module tb_mrsn_ntt_real16;
+
+   parameter WIDTH = 32;
+
+   parameter LEN          = 16;
+   
+   parameter CLK_PERIOD = 10;
+
+   localparam DELAY = 8+1;
+
+   parameter  W0 = 13;
+
+   parameter  W1  = 19;
+
+   localparam W_NOTUSED = WIDTH - W0 - W1;
+
+   logic     clk;
+   logic     rst_n;
+   logic     en;
+
+   logic [WIDTH-1:0] a [0:LEN-1];
+   
+   logic [W0-1:0]    a0 [0:LEN-1];
+   
+   logic [W1-1:0]    a1 [0:LEN-1];
+
+
+   logic  [WIDTH-1:0] c [0:LEN-1];
+
+   logic  [W0-1:0] c0 [0:LEN-1];
+
+   logic  [W1-1:0] c1 [0:LEN-1];
+
+   
+   logic signed [W0-1:0] c0_array [0:3][0:LEN-1];
+   logic signed [W1-1:0] c1_array [0:3][0:LEN-1];
+   
+   genvar		    i;
+   
+   mrsn_intt_real16 
+     #(
+       .WIDTH(WIDTH),
+       .LEN(LEN)
+       ) 
+   dut
+     (
+      .clk_i(clk),
+      .rst_ni(rst_n),
+      .en_i(en),
+      .c_i(c),
+      .a_o(a)
+      );
+   
+    
+
+  generate
+     for (i = 0; i < LEN; i++) begin
+	assign	c[i] =  {{W_NOTUSED{1'b0}}, c1[i], c0[i]};
+	assign a0[i] = a[i][W0-1:0];
+	assign a1[i] = a[i][W1+W0-1:W0];
+     end
+  endgenerate
+   
+
+   // Clock generation
+   
+   
+   initial clk = 1'b0;
+   always #(CLK_PERIOD / 2) clk = ~clk;
+
+   
+   initial begin
+
+      c0_array[0] = '{
+		      13'd4089,  13'd4018,  13'd3734,  13'd707, 
+		      13'd3373,  13'd643,   13'd151,   13'd5761,  
+		      13'd5498,  13'd6292,  13'd4664,  13'd2146,  
+		      13'd1970,  13'd2369,  13'd69,    13'd7135 
+		      };
+      
+      c1_array[0] = '{
+		      19'd121822, 19'd304199, 19'd123546, 19'd67899,
+		      19'd95186,  19'd106530, 19'd127579, 19'd70039,
+		      19'd477129, 19'd47365,  19'd169259, 19'd196621,
+		      19'd211214, 19'd164583, 19'd30553,  19'd369353
+		      };
+
+       c0_array[1] = '{
+		       13'd2114, 13'd883, 13'd5006, 13'd1088, 
+		       13'd1660, 13'd1246, 13'd2609, 13'd7501, 
+		       13'd3506, 13'd1010, 13'd6492, 13'd4395, 
+		       13'd6413, 13'd7032, 13'd1250, 13'd1426
+		       };
+      
+      c1_array[1] = '{
+		      19'd106450, 19'd95730, 19'd17372, 19'd138771, 
+		      19'd71486, 19'd77368, 19'd475298, 19'd226212, 
+		      19'd142664, 19'd337043, 19'd41444, 19'd11913, 
+		      19'd491633, 19'd455481, 19'd205662, 19'd368085
+		      };
+ 
+		     
+      
+      // Reset & enable
+      rst_n  = 1'b0;
+      en = 1'b0;
+      repeat (2) @(posedge clk);
+      rst_n  = 1'b1;
+      en = 1'b1;
+      
+      @(posedge clk);
+      c0 = c0_array[0];
+      c1 = c1_array[0];
+
+      @(posedge clk);
+      c0 = c0_array[1];
+      c1 = c1_array[1];
+
+ 
+      repeat (DELAY) @(posedge clk);
+
+      @(posedge clk);
+      
+      $display("=== TEST COMPLETE ===");
+      $finish;
+      
+   end  // initial begin
+
+  always @(posedge clk) begin
+     $display("[%0t]  Input_13: %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d \n Input_19: %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d\n Output_13:  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d \n Output_19:  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d  %0d\n ",
+	      $time,
+	      c0[0], c0[1], c0[2], c0[3], c0[4], c0[5], c0[6], c0[7],
+	      c0[8], c0[9], c0[10], c0[11], c0[12], c0[13], c0[14], c0[15],
+	      c1[0], c1[1], c1[2], c1[3], c1[4], c1[5], c1[6], c1[7],
+	      c1[8], c1[9], c1[10], c1[11], c1[12], c1[13], c1[14], c1[15],
+	      a0[0], a0[1], a0[2], a0[3], a0[4], a0[5], a0[6], a0[7],
+	      a0[8], a0[9], a0[10], a0[11], a0[12], a0[13], a0[14], a0[15],
+	      a1[0], a1[1], a1[2], a1[3], a1[4], a1[5], a1[6], a1[7],
+	      a1[8], a1[9], a1[10], a1[11], a1[12], a1[13], a1[14], a1[15]
+	      );
+
+    // $display("[%0t]  %0d %0d %0d %0d", $time, dut.c0_re_s2[7], dut.c0_im_s2[7], dut.c0_re_s2a[7], dut.c0_im_s2a[7]);
+     
+     
+   end
+
+ 
+ 
+
+endmodule

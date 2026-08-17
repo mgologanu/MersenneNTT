@@ -4,3 +4,18 @@ timing.h
 *.test
 exe*
 a.out
+*.exe
+
+# Verilator and synlig
+
+obj_dir/
+slpp_all/
+
+synth.svg 
+synth.json
+synth.v
+
+#emacs temporary
+*~
+
+
