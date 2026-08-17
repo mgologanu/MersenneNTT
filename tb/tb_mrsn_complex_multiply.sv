@@ -40,7 +40,7 @@ module tb_mrsn_complex_multiply;
    logic [31:0]		rand_val1, rand_val2, rand_val3, rand_val4;
    
   // Instantiate the DUT
-  mrsn_complex_multiply2 
+  mrsn_complex_multiply 
     #(
       .WIDTH(WIDTH),
       .W0(W0),
