@@ -1,0 +1,6 @@
+*.o
+*.a
+timing.h
+*.test
+exe*
+a.out
