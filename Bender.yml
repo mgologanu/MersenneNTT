@@ -1,0 +1,23 @@
+package:
+  name: mersenne_ntt
+  authors:
+    - "Mihai Gologanu <mihai.gologanu@imt.ro>"
+
+dependencies:
+
+sources:
+  - rtl/LUT6_2.sv
+  - rtl/LUT6.sv
+  - rtl/mrsn_add_sub.sv
+  - rtl/mrsn_complex_multiply.sv
+  - rtl/mrsn_intt_real16.sv
+  - rtl/mrsn_ntt_real16.sv
+  - rtl/mrsn_omega16_p13.sv
+  - rtl/mrsn_omega16_p19.sv
+  - rtl/mrsn_omega32_3_p13.sv
+  - rtl/mrsn_omega32_3_p19.sv
+  - rtl/mrsn_omega32_p13.sv
+  - rtl/mrsn_omega32_p19.sv
+  - rtl/MUXCY.sv
+  - rtl/pipe_reg.sv
+  - rtl/XORCY.sv
