@@ -1,12 +1,12 @@
 /* Modular butterfly type 4 for Mersenne prime modulus p = 2^W-1
  
  
- Input: complex
+  Input: complex
  
     a
     b
  
- Output:  
+  Output:  
     
     a + b * sqrt(-i)
     a - b * sqrt(-i)
@@ -53,11 +53,13 @@ module bf4 #(
     tmp = (b_re + i b_im)(-1+i) 
         = (-b_re - i b_im) + i (b_re + i b_im)   
      
-    tmp = -b_re - b_im + i(b_re - b_im)
-        
+    
+    tmp = -(b_re + b_im)     + i (b_re - b_im)
     a = a_re + rot(tmp_re) + i (a_im + rot(tmp_im))
     b = a_re - rot(tmp_re) + i (a_im - rot(tmp_im))
-    */
+  */
+
+
   logic [W-1:0] a_re_q, a_im_q, tmp_re, tmp_im;
 
 
@@ -85,6 +87,7 @@ module bf4 #(
 
   // tmp_re  = -(b_re + b_im) 
   // tmp_im  =   b_re - b_im
+
   mrsn_add_sub #(
       .N(W)
   ) adder1 (
