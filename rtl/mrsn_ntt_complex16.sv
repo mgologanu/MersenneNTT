@@ -32,10 +32,10 @@ module mrsn_ntt_complex16 #(
     input  logic             clk_i,
     input  logic             rst_ni,
     input  logic             en_i,
-    input  logic [WIDTH-1:0] a_re_i[LEN],
-    input  logic [WIDTH-1:0] a_im_i[LEN],
-    output logic [WIDTH-1:0] c_re_o[LEN],
-    output logic [WIDTH-1:0] c_im_o[LEN]
+    input  logic [WIDTH-1:0] a_re_i[LEN - 1 : 0],
+    input  logic [WIDTH-1:0] a_im_i[LEN - 1 : 0],
+    output logic [WIDTH-1:0] c_re_o[LEN - 1 : 0],
+    output logic [WIDTH-1:0] c_im_o[LEN - 1 : 0]
 );
 
   localparam W0 = `W0;

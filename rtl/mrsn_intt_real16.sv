@@ -20,11 +20,11 @@ module mrsn_intt_real16 #(
     parameter  WIDTH = 32,
     parameter  LEN   = 16
 ) (
-    input logic			   clk_i,
-    input logic			   rst_ni,
-    input logic			   en_i,
-    input logic  [WIDTH-1:0]       c_i [LEN],
-    output logic [WIDTH-1:0]	   a_o [LEN]
+    input logic			          clk_i             ,
+    input logic			          rst_ni            ,
+    input logic			          en_i              ,
+    input logic  [WIDTH-1:0]  c_i [LEN - 1 : 0] ,
+    output logic [WIDTH-1:0]	a_o [LEN - 1 : 0] 
 );
 
    
@@ -277,14 +277,14 @@ module mrsn_intt_real16 #(
 
    //inverse: (re,im)*(c,-s) = (re*c + im*s, -re*s + im*c) with (c,s) = (c32  s32)
    
-   mrsn_omega32_p`W0 #(.W(W0)) mult0_0 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[1]), .x_c_o(tmp0_re_c_s2a), .x_s_o(tmp0_re_s_s2a));
-   mrsn_omega32_p`W0 #(.W(W0)) mult0_1 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[1]), .x_c_o(tmp0_im_c_s2a), .x_s_o(tmp0_im_s_s2a));
+   mrsn_omega32_p13 #(.W(W0)) mult0_0 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[1]), .x_c_o(tmp0_re_c_s2a), .x_s_o(tmp0_re_s_s2a));
+   mrsn_omega32_p13 #(.W(W0)) mult0_1 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[1]), .x_c_o(tmp0_im_c_s2a), .x_s_o(tmp0_im_s_s2a));
 
    mrsn_add_sub #(.N(W0)) adder0_0_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp0_re_c_s2a), .b_i(tmp0_im_s_s2a), .sum_o(c0_re_s2a[1]));
    mrsn_add_sub #(.N(W0)) adder0_1_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp0_im_c_s2a), .b_i(tmp0_re_s_s2a), .sum_o(c0_im_s2a[1]));
 
-   mrsn_omega32_p`W1 #(.W(W1)) mult1_0 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[1]), .x_c_o(tmp1_re_c_s2a), .x_s_o(tmp1_re_s_s2a));
-   mrsn_omega32_p`W1 #(.W(W1)) mult1_1 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[1]), .x_c_o(tmp1_im_c_s2a), .x_s_o(tmp1_im_s_s2a));
+   mrsn_omega32_p19 #(.W(W1)) mult1_0 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[1]), .x_c_o(tmp1_re_c_s2a), .x_s_o(tmp1_re_s_s2a));
+   mrsn_omega32_p19 #(.W(W1)) mult1_1 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[1]), .x_c_o(tmp1_im_c_s2a), .x_s_o(tmp1_im_s_s2a));
 
    mrsn_add_sub #(.N(W1)) adder1_0_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp1_re_c_s2a), .b_i(tmp1_im_s_s2a), .sum_o(c1_re_s2a[1]));
    mrsn_add_sub #(.N(W1)) adder1_1_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp1_im_c_s2a), .b_i(tmp1_re_s_s2a), .sum_o(c1_im_s2a[1]));
@@ -293,14 +293,14 @@ module mrsn_intt_real16 #(
 
    //inverse: (re,im)*(c,-s) = (re*c + im*s, -re*s + im*c) with (c,s) = (c16  s16) 
   
-   mrsn_omega16_p`W0 #(.W(W0)) mult0_2 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[2]), .x_c_o(tmp2_re_c_s2a), .x_s_o(tmp2_re_s_s2a));
-   mrsn_omega16_p`W0 #(.W(W0)) mult0_3 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[2]), .x_c_o(tmp2_im_c_s2a), .x_s_o(tmp2_im_s_s2a));
+   mrsn_omega16_p13 #(.W(W0)) mult0_2 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[2]), .x_c_o(tmp2_re_c_s2a), .x_s_o(tmp2_re_s_s2a));
+   mrsn_omega16_p13 #(.W(W0)) mult0_3 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[2]), .x_c_o(tmp2_im_c_s2a), .x_s_o(tmp2_im_s_s2a));
 
    mrsn_add_sub #(.N(W0)) adder0_2_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp2_re_c_s2a), .b_i(tmp2_im_s_s2a), .sum_o(c0_re_s2a[2]));
    mrsn_add_sub #(.N(W0)) adder0_3_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp2_im_c_s2a), .b_i(tmp2_re_s_s2a), .sum_o(c0_im_s2a[2]));
 
-   mrsn_omega16_p`W1 #(.W(W1)) mult1_2 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[2]), .x_c_o(tmp3_re_c_s2a), .x_s_o(tmp3_re_s_s2a));
-   mrsn_omega16_p`W1 #(.W(W1)) mult1_3 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[2]), .x_c_o(tmp3_im_c_s2a), .x_s_o(tmp3_im_s_s2a));
+   mrsn_omega16_p19 #(.W(W1)) mult1_2 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[2]), .x_c_o(tmp3_re_c_s2a), .x_s_o(tmp3_re_s_s2a));
+   mrsn_omega16_p19 #(.W(W1)) mult1_3 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[2]), .x_c_o(tmp3_im_c_s2a), .x_s_o(tmp3_im_s_s2a));
 
    mrsn_add_sub #(.N(W1)) adder1_2_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp3_re_c_s2a), .b_i(tmp3_im_s_s2a), .sum_o(c1_re_s2a[2]));
    mrsn_add_sub #(.N(W1)) adder1_3_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp3_im_c_s2a), .b_i(tmp3_re_s_s2a), .sum_o(c1_im_s2a[2]));
@@ -310,14 +310,14 @@ module mrsn_intt_real16 #(
 
    //inverse: (re,im)*(c,s) = (re*c + im*s, -re*s + im*c)    (c,s) = (c32,   s32)^3 = (c32_3,   s32_3)
   
-   mrsn_omega32_3_p`W0 #(.W(W0)) mult0_4 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[3]), .x_c_o(tmp4_re_c_s2a), .x_s_o(tmp4_re_s_s2a));
-   mrsn_omega32_3_p`W0 #(.W(W0)) mult0_5 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[3]), .x_c_o(tmp4_im_c_s2a), .x_s_o(tmp4_im_s_s2a));
+   mrsn_omega32_3_p13 #(.W(W0)) mult0_4 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[3]), .x_c_o(tmp4_re_c_s2a), .x_s_o(tmp4_re_s_s2a));
+   mrsn_omega32_3_p13 #(.W(W0)) mult0_5 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[3]), .x_c_o(tmp4_im_c_s2a), .x_s_o(tmp4_im_s_s2a));
 
    mrsn_add_sub #(.N(W0)) adder0_4_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp4_re_c_s2a), .b_i(tmp4_im_s_s2a), .sum_o(c0_re_s2a[3]));
    mrsn_add_sub #(.N(W0)) adder0_5_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp4_im_c_s2a), .b_i(tmp4_re_s_s2a), .sum_o(c0_im_s2a[3]));
 
-   mrsn_omega32_3_p`W1 #(.W(W1)) mult1_4 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[3]), .x_c_o(tmp5_re_c_s2a), .x_s_o(tmp5_re_s_s2a));
-   mrsn_omega32_3_p`W1 #(.W(W1)) mult1_5 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[3]), .x_c_o(tmp5_im_c_s2a), .x_s_o(tmp5_im_s_s2a));
+   mrsn_omega32_3_p19 #(.W(W1)) mult1_4 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[3]), .x_c_o(tmp5_re_c_s2a), .x_s_o(tmp5_re_s_s2a));
+   mrsn_omega32_3_p19 #(.W(W1)) mult1_5 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[3]), .x_c_o(tmp5_im_c_s2a), .x_s_o(tmp5_im_s_s2a));
 
    mrsn_add_sub #(.N(W1)) adder1_4_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp5_re_c_s2a), .b_i(tmp5_im_s_s2a), .sum_o(c1_re_s2a[3]));
    mrsn_add_sub #(.N(W1)) adder1_5_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp5_im_c_s2a), .b_i(tmp5_re_s_s2a), .sum_o(c1_im_s2a[3]));
@@ -338,14 +338,14 @@ module mrsn_intt_real16 #(
 
    //inverse: (re,im)*(c,s) = (re*c - im*s, re*s + im*c)     (c,s) = (c32,   s32)^3 = (c32_3,   s32_3)
   
-   mrsn_omega32_3_p`W0 #(.W(W0)) mult0_6 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[5]), .x_c_o(tmp6_re_c_s2a), .x_s_o(tmp6_re_s_s2a));
-   mrsn_omega32_3_p`W0 #(.W(W0)) mult0_7 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[5]), .x_c_o(tmp6_im_c_s2a), .x_s_o(tmp6_im_s_s2a));
+   mrsn_omega32_3_p13 #(.W(W0)) mult0_6 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[5]), .x_c_o(tmp6_re_c_s2a), .x_s_o(tmp6_re_s_s2a));
+   mrsn_omega32_3_p13 #(.W(W0)) mult0_7 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[5]), .x_c_o(tmp6_im_c_s2a), .x_s_o(tmp6_im_s_s2a));
 
    mrsn_add_sub #(.N(W0)) adder0_6_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp6_re_c_s2a), .b_i(tmp6_im_s_s2a), .sum_o(c0_re_s2a[5]));
    mrsn_add_sub #(.N(W0)) adder0_7_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp6_im_c_s2a), .b_i(tmp6_re_s_s2a), .sum_o(c0_im_s2a[5]));
 
-   mrsn_omega32_3_p`W1 #(.W(W1)) mult1_6 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[5]), .x_c_o(tmp7_re_c_s2a), .x_s_o(tmp7_re_s_s2a));
-   mrsn_omega32_3_p`W1 #(.W(W1)) mult1_7 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[5]), .x_c_o(tmp7_im_c_s2a), .x_s_o(tmp7_im_s_s2a));
+   mrsn_omega32_3_p19 #(.W(W1)) mult1_6 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[5]), .x_c_o(tmp7_re_c_s2a), .x_s_o(tmp7_re_s_s2a));
+   mrsn_omega32_3_p19 #(.W(W1)) mult1_7 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[5]), .x_c_o(tmp7_im_c_s2a), .x_s_o(tmp7_im_s_s2a));
 
    mrsn_add_sub #(.N(W1)) adder1_6_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp7_re_c_s2a), .b_i(tmp7_im_s_s2a), .sum_o(c1_re_s2a[5]));
    mrsn_add_sub #(.N(W1)) adder1_7_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp7_im_c_s2a), .b_i(tmp7_re_s_s2a), .sum_o(c1_im_s2a[5]));
@@ -354,14 +354,14 @@ module mrsn_intt_real16 #(
 
    //inverse: (re,im)*(s,c) = (re*s - im*c, re*c + im*s)  (c,s) = (c16,s16)
 
-   mrsn_omega16_p`W0 #(.W(W0)) mult0_8 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[6]), .x_c_o(tmp8_re_c_s2a), .x_s_o(tmp8_re_s_s2a));
-   mrsn_omega16_p`W0 #(.W(W0)) mult0_9 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[6]), .x_c_o(tmp8_im_c_s2a), .x_s_o(tmp8_im_s_s2a));
+   mrsn_omega16_p13 #(.W(W0)) mult0_8 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[6]), .x_c_o(tmp8_re_c_s2a), .x_s_o(tmp8_re_s_s2a));
+   mrsn_omega16_p13 #(.W(W0)) mult0_9 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[6]), .x_c_o(tmp8_im_c_s2a), .x_s_o(tmp8_im_s_s2a));
 
    mrsn_add_sub #(.N(W0)) adder0_8_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp8_re_s_s2a), .b_i(tmp8_im_c_s2a), .sum_o(c0_re_s2a[6]));
    mrsn_add_sub #(.N(W0)) adder0_9_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp8_im_s_s2a), .b_i(tmp8_re_c_s2a), .sum_o(c0_im_s2a[6]));
 
-   mrsn_omega16_p`W1 #(.W(W1)) mult1_8 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[6]), .x_c_o(tmp9_re_c_s2a), .x_s_o(tmp9_re_s_s2a));
-   mrsn_omega16_p`W1 #(.W(W1)) mult1_9 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[6]), .x_c_o(tmp9_im_c_s2a), .x_s_o(tmp9_im_s_s2a));
+   mrsn_omega16_p19 #(.W(W1)) mult1_8 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[6]), .x_c_o(tmp9_re_c_s2a), .x_s_o(tmp9_re_s_s2a));
+   mrsn_omega16_p19 #(.W(W1)) mult1_9 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[6]), .x_c_o(tmp9_im_c_s2a), .x_s_o(tmp9_im_s_s2a));
 
    mrsn_add_sub #(.N(W1)) adder1_8_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp9_re_s_s2a), .b_i(tmp9_im_c_s2a), .sum_o(c1_re_s2a[6]));
    mrsn_add_sub #(.N(W1)) adder1_9_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp9_im_s_s2a), .b_i(tmp9_re_c_s2a), .sum_o(c1_im_s2a[6]));
@@ -374,14 +374,14 @@ module mrsn_intt_real16 #(
 
    // NOTE inverse: the imaginary part s is sign corrected to -s so that we need (re,im)*(s,c) = (re*s - im*c,   re*c + im*s)
 
-   mrsn_omega32_p`W0 #(.W(W0)) mult0_10 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[7]), .x_c_o(tmp10_re_c_s2a), .x_s_o(tmp10_re_s_s2a));
-   mrsn_omega32_p`W0 #(.W(W0)) mult0_11 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[7]), .x_c_o(tmp10_im_c_s2a), .x_s_o(tmp10_im_s_s2a));
+   mrsn_omega32_p13 #(.W(W0)) mult0_10 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2[7]), .x_c_o(tmp10_re_c_s2a), .x_s_o(tmp10_re_s_s2a));
+   mrsn_omega32_p13 #(.W(W0)) mult0_11 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2[7]), .x_c_o(tmp10_im_c_s2a), .x_s_o(tmp10_im_s_s2a));
 
    mrsn_add_sub #(.N(W0)) adder0_10_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp10_im_c_s2a), .b_i(tmp10_re_s_s2a), .sum_o(c0_re_s2a[7]));
    mrsn_add_sub #(.N(W0)) adder0_11_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp10_re_c_s2a), .b_i(tmp10_im_s_s2a), .sum_o(c0_im_s2a[7]));
    
-   mrsn_omega32_p`W1 #(.W(W1)) mult1_10 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[7]), .x_c_o(tmp11_re_c_s2a), .x_s_o(tmp11_re_s_s2a));
-   mrsn_omega32_p`W1 #(.W(W1)) mult1_11 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[7]), .x_c_o(tmp11_im_c_s2a), .x_s_o(tmp11_im_s_s2a));
+   mrsn_omega32_p19 #(.W(W1)) mult1_10 (.clk_i, .rst_ni, .en_i, .x_i(c1_re_s2[7]), .x_c_o(tmp11_re_c_s2a), .x_s_o(tmp11_re_s_s2a));
+   mrsn_omega32_p19 #(.W(W1)) mult1_11 (.clk_i, .rst_ni, .en_i, .x_i(c1_im_s2[7]), .x_c_o(tmp11_im_c_s2a), .x_s_o(tmp11_im_s_s2a));
 
    mrsn_add_sub #(.N(W1)) adder1_10_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp11_im_c_s2a), .b_i(tmp11_re_s_s2a), .sum_o(c1_re_s2a[7]));
    mrsn_add_sub #(.N(W1)) adder1_11_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp11_re_c_s2a), .b_i(tmp11_im_s_s2a), .sum_o(c1_im_s2a[7]));
@@ -459,12 +459,10 @@ module mrsn_intt_real16 #(
 
  generate
    for (i = 0; i < LEN / 2; i++) begin
-     always_comb begin
        assign a0_s0[i]       = c0_re_s1[i];
        assign a0_s0[i+LEN/2] = c0_im_s1[i];
        assign a1_s0[i]       = c1_re_s1[i];
        assign a1_s0[i+LEN/2] = c1_im_s1[i];
-     end
    end
  endgenerate
 

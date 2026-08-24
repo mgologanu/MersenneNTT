@@ -8,10 +8,10 @@ module mrsn_ntt_complex16_1 #(
     input logic		     clk_i,
     input logic		     rst_ni,
     input logic		     en_i,
-    input logic  [W-1:0] a_re_i [LEN],
-    input logic  [W-1:0] a_im_i [LEN],
-    output logic [W-1:0] c_re_o [LEN],
-    output logic [W-1:0] c_im_o [LEN]
+    input logic  [W-1:0] a_re_i [LEN - 1 : 0],
+    input logic  [W-1:0] a_im_i [LEN - 1 : 0],
+    output logic [W-1:0] c_re_o [LEN - 1 : 0],
+    output logic [W-1:0] c_im_o [LEN - 1 : 0]
 );
 
   localparam P8 = (W - 1) / 2;

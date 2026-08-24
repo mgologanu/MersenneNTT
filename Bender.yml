@@ -6,7 +6,6 @@ package:
 dependencies:
 
 sources:
-  - rtl/CARRY4.sv
   - rtl/bf1.sv
   - rtl/bf2.sv
   - rtl/bf3.sv
@@ -14,8 +13,6 @@ sources:
   - rtl/bf2a.sv
   - rtl/bf3a.sv
   - rtl/bf4a.sv
-  - rtl/LUT6_2.sv
-  - rtl/LUT6.sv
   - rtl/mrsn_add_sub.sv
   - rtl/mrsn_complex_multiply.sv
   - rtl/mrsn_intt_complex16.sv
@@ -30,6 +27,12 @@ sources:
   - rtl/mrsn_omega32_3_p19.sv
   - rtl/mrsn_omega32_p13.sv
   - rtl/mrsn_omega32_p19.sv
-  - rtl/MUXCY.sv
   - rtl/pipe_reg.sv
-  - rtl/XORCY.sv
+
+  - target : not(vivado)
+    files:
+      - rtl/LUT6_2.sv
+      - rtl/LUT6.sv
+      - rtl/MUXCY.sv
+      - rtl/XORCY.sv
+      - rtl/CARRY4.sv
