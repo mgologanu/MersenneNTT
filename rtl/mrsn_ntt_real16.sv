@@ -53,11 +53,11 @@ module mrsn_ntt_real16 #(
     parameter  WIDTH = 32,
     parameter  LEN   = 16
 ) (
-    input logic			      clk_i             ,
-    input logic			      rst_ni            ,
-    input logic			      en_i              ,
-    input logic  [WIDTH-1:0]  a_i [0 : LEN - 1] ,
-    output logic [WIDTH-1:0]  c_o [0 : LEN - 1] 
+  input logic		   clk_i,
+  input logic		   rst_ni,
+  input logic		   en_i,
+  input logic [WIDTH-1:0]  a_i [0 : LEN-1],
+  output logic [WIDTH-1:0] c_o [0 : LEN-1]
 );
 
 
@@ -207,10 +207,12 @@ module mrsn_ntt_real16 #(
 
   generate
     for (i = 0; i < LEN / 2; i++) begin
+      always_comb begin
         assign c0_re_s1[i] = a0_s0[i];
         assign c0_im_s1[i] = a0_s0[i+LEN/2];
         assign c1_re_s1[i] = a1_s0[i];
         assign c1_im_s1[i] = a1_s0[i+LEN/2];
+      end
     end
   endgenerate
 
@@ -348,8 +350,8 @@ module mrsn_ntt_real16 #(
    
    //(re,im)*(c,s) = (re*c - im*s, re*s + im*c)    (c,s) = (c32,   s32)^3 = (c32_3,   s32_3)
   
-   mrsn_omega16_p13 #(.W(W0)) mult0_4 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2a[3]), .x_c_o(tmp4_re_c_s2), .x_s_o(tmp4_re_s_s2));
-   mrsn_omega16_p13 #(.W(W0)) mult0_5 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2a[3]), .x_c_o(tmp4_im_c_s2), .x_s_o(tmp4_im_s_s2));
+   mrsn_omega32_3_p13 #(.W(W0)) mult0_4 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2a[3]), .x_c_o(tmp4_re_c_s2), .x_s_o(tmp4_re_s_s2));
+   mrsn_omega32_3_p13 #(.W(W0)) mult0_5 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2a[3]), .x_c_o(tmp4_im_c_s2), .x_s_o(tmp4_im_s_s2));
 
    mrsn_add_sub #(.N(W0)) adder0_4_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp4_re_c_s2), .b_i(tmp4_im_s_s2), .sum_o(c0_re_s2[3]));
    mrsn_add_sub #(.N(W0)) adder0_5_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp4_re_s_s2), .b_i(tmp4_im_c_s2), .sum_o(c0_im_s2[3]));
@@ -374,8 +376,8 @@ module mrsn_ntt_real16 #(
    
    //(re,im)*(c,-s) = (re*c + im*s, -re*s + im*c)    (c,s) = (c32,   s32)^3 = (c32_3,   s32_3)
   
-   mrsn_omega16_p13 #(.W(W0)) mult0_6 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2a[5]), .x_c_o(tmp6_re_c_s2), .x_s_o(tmp6_re_s_s2));
-   mrsn_omega16_p13 #(.W(W0)) mult0_7 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2a[5]), .x_c_o(tmp6_im_c_s2), .x_s_o(tmp6_im_s_s2));
+   mrsn_omega32_3_p13 #(.W(W0)) mult0_6 (.clk_i, .rst_ni, .en_i, .x_i(c0_re_s2a[5]), .x_c_o(tmp6_re_c_s2), .x_s_o(tmp6_re_s_s2));
+   mrsn_omega32_3_p13 #(.W(W0)) mult0_7 (.clk_i, .rst_ni, .en_i, .x_i(c0_im_s2a[5]), .x_c_o(tmp6_im_c_s2), .x_s_o(tmp6_im_s_s2));
 
    mrsn_add_sub #(.N(W0)) adder0_6_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`ADD), .a_i(tmp6_re_c_s2), .b_i(tmp6_im_s_s2), .sum_o(c0_re_s2[5]));
    mrsn_add_sub #(.N(W0)) adder0_7_s1 (.clk_i, .rst_ni, .en_i, .mode_i(`SUB), .a_i(tmp6_im_c_s2), .b_i(tmp6_re_s_s2), .sum_o(c0_im_s2[5]));
