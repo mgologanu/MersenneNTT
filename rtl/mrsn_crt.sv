@@ -1,4 +1,55 @@
+/*
+ 
+ Given positive remainders r0 mod p0 and r1 mod p1 with p0 and p1
+ Mersenne primes (p0 = 2^13-1 and p1 = 2^19-1), representing some
+ coefficient of the polynomial product in rings Z_p0[X]/(X^n+1) and
+ Z_p1[X]/(X^n+1), use the Chinese Remainder Theorem to calculate a
+ signed remainder r mod p0*p1, representing the same coefficient of
+ the product in Z[X].
+ 
+ This coefficient r is further reduced to a signed remainder "rq" mod
+ q, where q is an arbitrary prime in the range [2^9 .. 2^14-1]. The
+ user must supply both q as a 32 bit integer and Rq = floor(2^31/q)
+ again as a 32 bit integer, to be used in Barrett reduction.
+ 
+ 
+ For the CRT, in order to have a unique remainder mod p0*p1 we use
+ Newton's representation with signed coefficients:
+ 
+ r = t0 + t1 * p0                                                       (1)
+ 
+ with t0 in [-(p0-1)/2 ... (p0-1)/2], t1 in  [-(p1-1)/2 ... (p1-1)/2]
+ 
+ so that r is automatically in [-(p0*p1-1)/2 ... (p0*p1-1)/2].
+ 
+ Note that r from (1) is a 32 bit signed integer. The usual Barrett
+ reduction for prime q requires -[(q-1)/2]^2 < r < [(q-1)/2]^2 and
+ this is not true for q in the range [2^9 .. 2^14-1].
+ 
+ One can use Barrett reduction with Rq = floor(2^46/q), but this
+ requires multiplication of large numbers.
+ 
+ Instead we use a two step Barrett reduction requiring 4
+ multiplications with relatively small numbers (adapted to 18x25
+ signed multiplier for Xilinx).
+ 
+ Rq = round(2^33/q) - unsigned max 24 bits.
+ 
+ 1. r = t0 + t1 * 2^13 - t1 
+ 
+ 2. x = floor(r/2^14) is 18 bit signed integer (floor is equivalent to arithmetic right shift for negative)
+ 
+ 3. y = floor(x * Rq / 2^19);
+ 
+ 4. z = r - y * q;
+ 
+ 5. second barret reduction gives the final result without any check
+ 
+ output =  z - round((z * Rq)/2^33) * q 
+ 
+  */
 
+ 
 `include "mrsn_ntt.svh"
 
 module mrsn_crt #(
@@ -104,14 +155,15 @@ module mrsn_crt #(
                           1
     -----------------------
     
-    = s0 + 1 as unsigned 13 bit. The only case with carry is 
+    = s0 + 1 as unsigned 13 bit. The only case with carry is s0 = 011111..111
     
     011111..11
            + 1 
     ---------- 
     1000000000
     
-    but in this case s0 = p0 (=0 mod(p0)) and then s0-p0 = 0 correct.
+    but in this case s0 = p0 (=0 mod(p0)) and then s0-p0 is zero as it
+    should be.
         
        
     */
