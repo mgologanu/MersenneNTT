@@ -10,7 +10,7 @@ module tb_mrsn_crt;
 
    parameter CLK_PERIOD = 10;
 
-   localparam DELAY = 5;
+   localparam DELAY = 10;
    
 
    // Clock and reset signals
@@ -22,23 +22,34 @@ module tb_mrsn_crt;
    // DUT signals
   
    logic [W0-1:0] r0, r0_q;
-
+   
    logic [W1-1:0] r1, r1_q;
 
    
    logic signed [W0-1:0] u0;
 
-   longint u0_expected,  u0_expected_q;
+   longint		 u0_expected,  u0_expected_q;
    
    logic signed [W1-1:0] u1;
-
-
+   
+   
    longint		 u1_expected,  u1_expected_q;
-      
-   longint		 prime0, prime1;
+   
+   longint		 prime0, prime1, ql, Rql;
+
+   longint		 r_expected,  r_expected_q;
+   longint		 z_expected,  z_expected_q;
 
    logic [31:0]		 rand_val1;
+
+   logic [WIDTH-1:0]	 q, r;
    
+   logic [WIDTH-1:0]	 Rq;
+   
+   logic signed [WIDTH-1:0] zq;
+   
+   
+
    
   // Instantiate the DUT
   mrsn_crt
@@ -51,8 +62,9 @@ module tb_mrsn_crt;
 	.en_i(en),
 	.r0(r0),
 	.r1(r1),
-	.v0(u0),
-	.v1(u1)
+	.Rq(Rq),
+	.q(q),
+	.zq(zq)
 	);
 
 
@@ -67,6 +79,7 @@ module tb_mrsn_crt;
    pipe_reg #(.WIDTH(64), .DEPTH(DELAY)) i_r2 (.clk_i(clk), .rst_ni(rst_n), .en_i(en), .input_i(u0_expected), .output_o(u0_expected_q));
    pipe_reg #(.WIDTH(64), .DEPTH(DELAY)) i_r3 (.clk_i(clk), .rst_ni(rst_n), .en_i(en), .input_i(u1_expected), .output_o(u1_expected_q));
 
+      pipe_reg #(.WIDTH(64), .DEPTH(DELAY)) i_r4 (.clk_i(clk), .rst_ni(rst_n), .en_i(en), .input_i(z_expected), .output_o(z_expected_q));
    
    function automatic longint signed_newton0 (longint r0, longint r1, longint p0, longint p1);
 
@@ -109,10 +122,12 @@ module tb_mrsn_crt;
 	 z = z3;
       end
       
-      return z3;
+      return z;
       
    endfunction
 
+
+   
 
    
    
@@ -124,6 +139,14 @@ module tb_mrsn_crt;
    
    initial prime0 = (1 << W0) - 1;
    initial prime1 = (1 << W1) - 1;
+   initial q = 32'd3329;
+
+   initial Rq = 32'd2580335;
+
+   initial ql = 3329;
+
+   initial Rql = 2580335;
+   
 
    
    initial begin
@@ -185,14 +208,37 @@ module tb_mrsn_crt;
       @(posedge clk);
       en = 1'b1;
       
-      r0 = 8191;
-      r1 = 524287;
+      //      r0 = 8191;
+      //      r1 = 524287;
+
+      r0 = 7345;
+      r1 = 205557;
 
       u0_expected =  signed_newton0({51'b0,r0}, {45'b0,r1}, prime0, prime1);
       u1_expected =  signed_newton1({51'b0,r0}, {45'b0,r1}, prime0, prime1);
       
 
+      r_expected = u0_expected + u1_expected * 8191;
+
+      z_expected = r_expected - (((r_expected >>> 14) * Rql) >>> 19) * ql;
+
+      @(posedge clk);
+      en = 1'b1;
       
+      //      r0 = 8191;
+      //      r1 = 524287;
+
+      r0 = 2345;
+      r1 = 105557;
+
+      u0_expected =  signed_newton0({51'b0,r0}, {45'b0,r1}, prime0, prime1);
+      u1_expected =  signed_newton1({51'b0,r0}, {45'b0,r1}, prime0, prime1);
+      
+
+      r_expected = u0_expected + u1_expected * 8191;
+
+      z_expected = r_expected - (((r_expected >>> 14) * Rql) >>> 19) * ql;
+
       
       
       repeat (DELAY) @(posedge clk);
@@ -206,10 +252,11 @@ module tb_mrsn_crt;
 
    
    always @(posedge clk) begin
-      $display("[%0t]  Input: %0d, %0d , Output: %0d, %0d, Expected: %0d, %0d,  Errors: %0d %0d",
-	       $time, r0_q, r1_q, u0, u1, u0_expected_q, u1_expected_q,
-	               $signed(u0) - u0_expected[13:0], $signed(u1) - u1_expected[31:0]
-	      	       );
+      $display("[%0t]  Input: %0d, %0d , Output: %0d %0d %0d %0d",
+	       $time, 
+	       r0_q, r1_q, u0_expected_q, u1_expected_q, zq, z_expected_q
+	       //$signed(u0) - u0_expected[13:0], $signed(u1) - u1_expected[31:0]
+	       );
     end
 
  
