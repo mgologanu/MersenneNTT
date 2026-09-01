@@ -6,6 +6,7 @@
  NTT is evaluated modulo Mersenne primes P0 = 2^13-1 and P1 = 2^19-1
  (or P1 = 2^17-1 - Work in progress)
 
+ 9 cycles
 */
 
 

@@ -22,10 +22,12 @@ module pipe_reg
       if (~rst_ni) begin
 	 pipe <= {LENGTH{1'b0}};
       end else begin
-	 if (DEPTH > 1) begin
-            pipe <= pipe >> WIDTH;
-	 end
-	 pipe[LENGTH-1:(DEPTH-1)*WIDTH] <= input_i;
+	  if (en_i) begin
+	     if (DEPTH > 1) begin
+		pipe <= pipe >> WIDTH;
+	     end
+	     pipe[LENGTH-1:(DEPTH-1)*WIDTH] <= input_i;
+	  end
       end
    end
 
