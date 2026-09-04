@@ -1,5 +1,7 @@
 `define ROT6 6
 `define ROT7 7
+`define ADD  1'b0
+`define SUB  1'b1
 
 
 module mrsn_mult_8321_p19 #(

@@ -207,12 +207,10 @@ module mrsn_ntt_real16 #(
 
   generate
     for (i = 0; i < LEN / 2; i++) begin
-      always_comb begin
-        assign c0_re_s1[i] = a0_s0[i];
-        assign c0_im_s1[i] = a0_s0[i+LEN/2];
-        assign c1_re_s1[i] = a1_s0[i];
-        assign c1_im_s1[i] = a1_s0[i+LEN/2];
-      end
+      assign c0_re_s1[i] = a0_s0[i];
+      assign c0_im_s1[i] = a0_s0[i+LEN/2];
+      assign c1_re_s1[i] = a1_s0[i];
+      assign c1_im_s1[i] = a1_s0[i+LEN/2];
     end
   endgenerate
 

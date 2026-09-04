@@ -84,11 +84,8 @@ module mrsn_barrett #(
 
    
    //x = floor(r/2^14);
-
-   always_comb begin
       assign x[18-1:0] = r[18+14-1:14];
       assign Rq_q      = {1'b0,Rq[24-1:0]};
-   end
    
  
    //y = floor(x * Rq / 2^19);
@@ -105,9 +102,7 @@ module mrsn_barrett #(
 
    pipe_reg #(.WIDTH(25), .DEPTH(3)) pipe_reg_Rq_q (.clk_i, .rst_ni, .en_i, .input_i(Rq_q), .output_o(Rq_qq));
    
-   always_comb begin
-      assign y[25-1:0] = {y0[43-1],  y0[24+19-1:19]};
-   end
+   assign y[25-1:0] = {y0[43-1],  y0[24+19-1:19]};
    
    
    always_ff @(posedge clk_i or negedge rst_ni) begin
@@ -126,9 +121,7 @@ module mrsn_barrett #(
    pipe_reg #(.WIDTH(18), .DEPTH(4)) pipe_reg_q_q (.clk_i, .rst_ni, .en_i, .input_i(q_q), .output_o(q_qq));
 
    
-   always_comb begin
-      assign z[18-1:0] = z1[18-1:0];
-   end
+   assign z[18-1:0] = z1[18-1:0];
    
 
    //zz = z - round((z * Rq)/2^33) * q

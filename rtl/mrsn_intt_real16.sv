@@ -460,12 +460,10 @@ module mrsn_intt_real16 #(
 
  generate
    for (i = 0; i < LEN / 2; i++) begin
-     always_comb begin
-       assign a0_s0[i]       = c0_re_s1[i];
-       assign a0_s0[i+LEN/2] = c0_im_s1[i];
-       assign a1_s0[i]       = c1_re_s1[i];
-       assign a1_s0[i+LEN/2] = c1_im_s1[i];
-     end
+    assign a0_s0[i]       = c0_re_s1[i];
+    assign a0_s0[i+LEN/2] = c0_im_s1[i];
+    assign a1_s0[i]       = c1_re_s1[i];
+    assign a1_s0[i+LEN/2] = c1_im_s1[i];
    end
  endgenerate
 

@@ -24,8 +24,9 @@
 `include "mrsn_ntt.svh"
 
 module mrsn_crt #(
-    parameter WIDTH = 32	       
-
+   parameter WIDTH = 32,       
+   localparam			W0 = 13,
+   localparam			W1 = 19
 ) (
    input logic			   clk_i,
    input logic			   rst_ni,
@@ -34,12 +35,7 @@ module mrsn_crt #(
    input logic [W1-1:0]		   r1,
    output logic signed [WIDTH-1:0] r
 
-);
-   
-   localparam			W0 = 13;
-   localparam			W1 = 19;
-   
-   
+);   
    localparam			W10 = W1-W0;
    
    
@@ -194,10 +190,8 @@ module mrsn_crt #(
    
    //sign extend u0 and v0 to WIDTH bits
  
-   always_comb begin
       assign  v0[WIDTH-1:0] = {{(WIDTH-W0){u0[W0-1]}},u0[W0-1:0]};
       assign  v1[WIDTH-1:0] = {{(WIDTH-W1){u1[W1-1]}},u1[W1-1:0]};
-    end
 
 
    

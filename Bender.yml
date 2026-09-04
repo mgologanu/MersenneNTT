@@ -7,20 +7,25 @@ dependencies:
 
 sources:
   - rtl/bf1.sv
-  - rtl/bf2.sv
-  - rtl/bf3.sv
-  - rtl/bf4.sv
   - rtl/bf2a.sv
+  - rtl/bf2.sv
   - rtl/bf3a.sv
+  - rtl/bf3.sv
   - rtl/bf4a.sv
+  - rtl/bf4.sv
   - rtl/mrsn_add_sub.sv
+  - rtl/mrsn_barrett.sv
   - rtl/mrsn_complex_multiply.sv
-  - rtl/mrsn_intt_complex16.sv
+  - rtl/mrsn_crt.sv
   - rtl/mrsn_intt_complex16_1.sv
+  - rtl/mrsn_intt_complex16.sv
+  - rtl/mrsn_intt_real16_crt_barrett.sv
   - rtl/mrsn_intt_real16.sv
-  - rtl/mrsn_ntt_complex16.sv
+  - rtl/mrsn_mult_8321_p19.sv
   - rtl/mrsn_ntt_complex16_1.sv
+  - rtl/mrsn_ntt_complex16.sv
   - rtl/mrsn_ntt_real16.sv
+  - rtl/mrsn_ntt.svh
   - rtl/mrsn_omega16_p13.sv
   - rtl/mrsn_omega16_p19.sv
   - rtl/mrsn_omega32_3_p13.sv
