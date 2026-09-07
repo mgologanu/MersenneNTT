@@ -18,23 +18,23 @@ module mrsn_ntt_complex16_1 #(
    
   localparam LAT_SEC_HALF = 4;
   
-  logic [W-1:0] c_re_s0[LEN];
-  logic [W-1:0] c_im_s0[LEN];
+  logic [W-1:0] c_re_s0[LEN - 1 : 0];
+  logic [W-1:0] c_im_s0[LEN - 1 : 0];
   
-  logic [W-1:0] c_re_s1[LEN];
-  logic [W-1:0] c_im_s1[LEN];
+  logic [W-1:0] c_re_s1[LEN - 1 : 0];
+  logic [W-1:0] c_im_s1[LEN - 1 : 0];
 
-  logic [W-1:0] c_re_s2[LEN];
-  logic [W-1:0] c_im_s2[LEN];
+  logic [W-1:0] c_re_s2[LEN - 1 : 0];
+  logic [W-1:0] c_im_s2[LEN - 1 : 0];
 
-  logic [W-1:0] c_re_s3[LEN];
-  logic [W-1:0] c_im_s3[LEN];
+  logic [W-1:0] c_re_s3[LEN - 1 : 0];
+  logic [W-1:0] c_im_s3[LEN - 1 : 0];
 
-  logic [W-1:0] c_re_s4[LEN];
-  logic [W-1:0] c_im_s4[LEN];
+  logic [W-1:0] c_re_s4[LEN - 1 : 0];
+  logic [W-1:0] c_im_s4[LEN - 1 : 0];
 
-  logic [W-1:0] c_re_tmp[LEN];
-  logic [W-1:0] c_im_tmp[LEN];
+  logic [W-1:0] c_re_tmp[LEN - 1 : 0];
+  logic [W-1:0] c_im_tmp[LEN - 1 : 0];
    
   logic [W-1:0] tmp0_re_c_s2, tmp0_re_s_s2, tmp0_im_c_s2, tmp0_im_s_s2,
 		tmp1_re_c_s2, tmp1_re_s_s2, tmp1_im_c_s2, tmp1_im_s_s2,

@@ -79,38 +79,38 @@ module mrsn_ntt_real16 #(
   localparam P0_om8 = (W0 - 1) / 2;
   localparam P1_om8 = (W1 - 1) / 2;
 
-   logic [W0-1:0] a0_lower   [  LEN];
-   logic [W0-1:0] a0_upper   [  LEN];
+   logic [W0-1:0] a0_lower   [LEN - 1 : 0];
+   logic [W0-1:0] a0_upper   [LEN - 1 : 0];
  
-   logic [W1-1:0] a1_lower   [  LEN];
-   logic [W1-1:0] a1_upper   [  LEN];
+   logic [W1-1:0] a1_lower   [LEN - 1 : 0];
+   logic [W1-1:0] a1_upper   [LEN - 1 : 0];
    
-  logic [W0-1:0] a0_s0   [  LEN];
-  logic [W1-1:0] a1_s0   [  LEN];
+  logic [W0-1:0] a0_s0   [LEN - 1 : 0];
+  logic [W1-1:0] a1_s0   [LEN - 1 : 0];
 
-  logic [W0-1:0] c0_re_s1[LEN/2];
-  logic [W0-1:0] c0_im_s1[LEN/2];
+  logic [W0-1:0] c0_re_s1[LEN/2 - 1 : 0];
+  logic [W0-1:0] c0_im_s1[LEN/2 - 1 : 0];
 
-  logic [W1-1:0] c1_re_s1[LEN/2];
-  logic [W1-1:0] c1_im_s1[LEN/2];
+  logic [W1-1:0] c1_re_s1[LEN/2 - 1 : 0];
+  logic [W1-1:0] c1_im_s1[LEN/2 - 1 : 0];
 
-  logic [W0-1:0] c0_re_s1_q[LEN/4], tmp0_re_s1[LEN/4];
-  logic [W0-1:0] c0_im_s1_q[LEN/4], tmp0_im_s1[LEN/4];
+  logic [W0-1:0] c0_re_s1_q[LEN/4 - 1 : 0], tmp0_re_s1[LEN/4 - 1 : 0];
+  logic [W0-1:0] c0_im_s1_q[LEN/4 - 1 : 0], tmp0_im_s1[LEN/4 - 1 : 0];
 
-  logic [W1-1:0] c1_re_s1_q[LEN/4], tmp1_re_s1[LEN/4];
-  logic [W1-1:0] c1_im_s1_q[LEN/4], tmp1_im_s1[LEN/4];
+  logic [W1-1:0] c1_re_s1_q[LEN/4 - 1 : 0], tmp1_re_s1[LEN/4 - 1 : 0];
+  logic [W1-1:0] c1_im_s1_q[LEN/4 - 1 : 0], tmp1_im_s1[LEN/4 - 1 : 0];
 
-  logic [W0-1:0] c0_re_s2a[LEN/2];
-  logic [W0-1:0] c0_im_s2a[LEN/2];
+  logic [W0-1:0] c0_re_s2a[LEN/2 - 1 : 0];
+  logic [W0-1:0] c0_im_s2a[LEN/2 - 1 : 0];
 
-  logic [W1-1:0] c1_re_s2a[LEN/2];
-  logic [W1-1:0] c1_im_s2a[LEN/2];
+  logic [W1-1:0] c1_re_s2a[LEN/2 - 1 : 0];
+  logic [W1-1:0] c1_im_s2a[LEN/2 - 1 : 0];
 
-  logic [W0-1:0] c0_re_s2[LEN/2];
-  logic [W0-1:0] c0_im_s2[LEN/2];
+  logic [W0-1:0] c0_re_s2[LEN/2 - 1 : 0];
+  logic [W0-1:0] c0_im_s2[LEN/2 - 1 : 0];
 
-  logic [W1-1:0] c1_re_s2[LEN/2];
-  logic [W1-1:0] c1_im_s2[LEN/2];
+  logic [W1-1:0] c1_re_s2[LEN/2 - 1 : 0];
+  logic [W1-1:0] c1_im_s2[LEN/2 - 1 : 0];
 
   logic [W0-1:0] tmp0_re_c_s2, tmp0_re_s_s2, tmp0_im_c_s2, tmp0_im_s_s2,
 		 tmp2_re_c_s2, tmp2_re_s_s2, tmp2_im_c_s2, tmp2_im_s_s2,
@@ -126,17 +126,17 @@ module mrsn_ntt_real16 #(
 		 tmp9_re_c_s2, tmp9_re_s_s2, tmp9_im_c_s2, tmp9_im_s_s2,
 		 tmp11_re_c_s2, tmp11_re_s_s2, tmp11_im_c_s2, tmp11_im_s_s2;
    
-  logic [W0-1:0] c0_re_s3[LEN/2];
-  logic [W0-1:0] c0_im_s3[LEN/2];
+  logic [W0-1:0] c0_re_s3[LEN/2 - 1 : 0];
+  logic [W0-1:0] c0_im_s3[LEN/2 - 1 : 0];
 
-  logic [W1-1:0] c1_re_s3[LEN/2];
-  logic [W1-1:0] c1_im_s3[LEN/2];
+  logic [W1-1:0] c1_re_s3[LEN/2 - 1 : 0];
+  logic [W1-1:0] c1_im_s3[LEN/2 - 1 : 0];
 
-  logic [W0-1:0] c0_re_s4[LEN/2];
-  logic [W0-1:0] c0_im_s4[LEN/2];
+  logic [W0-1:0] c0_re_s4[LEN/2 - 1 : 0];
+  logic [W0-1:0] c0_im_s4[LEN/2 - 1 : 0];
 
-  logic [W1-1:0] c1_re_s4[LEN/2];
-  logic [W1-1:0] c1_im_s4[LEN/2];
+  logic [W1-1:0] c1_re_s4[LEN/2 - 1 : 0];
+  logic [W1-1:0] c1_im_s4[LEN/2 - 1 : 0];
 
   genvar i,j;
 

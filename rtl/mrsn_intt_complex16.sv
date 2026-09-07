@@ -50,17 +50,17 @@ module mrsn_intt_complex16 #(
   localparam P0_om8 = (W0 - 1) / 2;
   localparam P1_om8 = (W1 - 1) / 2;
 
-  logic [W0-1:0] c0_re_s0[LEN];
-  logic [W0-1:0] c0_im_s0[LEN];
+  logic [W0-1:0] c0_re_s0[LEN - 1 : 0];
+  logic [W0-1:0] c0_im_s0[LEN - 1 : 0];
    
-  logic [W0-1:0] c0_re_s4[LEN];
-  logic [W0-1:0] c0_im_s4[LEN];
+  logic [W0-1:0] c0_re_s4[LEN - 1 : 0];
+  logic [W0-1:0] c0_im_s4[LEN - 1 : 0];
 
-  logic [W1-1:0] c1_re_s0[LEN];
-  logic [W1-1:0] c1_im_s0[LEN];
+  logic [W1-1:0] c1_re_s0[LEN - 1 : 0];
+  logic [W1-1:0] c1_im_s0[LEN - 1 : 0];
 
-  logic [W1-1:0] c1_re_s4[LEN];
-  logic [W1-1:0] c1_im_s4[LEN];
+  logic [W1-1:0] c1_re_s4[LEN - 1 : 0];
+  logic [W1-1:0] c1_im_s4[LEN - 1 : 0];
 
   genvar i;
 
@@ -115,7 +115,7 @@ module mrsn_intt_complex16 #(
 
   // register output
   generate
-    for (i = 0; i < LEN / 2; i++) begin
+    for (i = 0; i < LEN; i++) begin
       always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
           c_re_o[i] <= '0;
