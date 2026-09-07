@@ -1,16 +1,18 @@
 
 
-input: a[256], m[256], ntt_b[256]
+input: int32_t a[256]
+       uint32_t m[256]
+       uint32_t ntt_b[256]
 
-output: conv_a_b[256]
+output: int32_t conv_a_b[256]
 
 
 
-  load A[16,16] line by line
+  load a in A[16,16] line by line
 
-  load M[16,16] line by line
+  load m in M[16,16] line by line
   
-  load NTT_B[16,16] line by line 
+  load ntt_b in NTT_B[16,16] line by line 
   
   A1 = real_ntt for each column of A
   
