@@ -138,18 +138,21 @@ int main()
 
     //  t[i] = cpucycles();
 
+    timing_now(&t[0]);
     va = _mm256_load_si256((__m256i *) &a[0+i*8]);
     
     vb = _mm256_load_si256((__m256i *) &b[0+i*8]);
     
-      timing_now(&t[0]);
+  
     vc = mul_mod_mersenne_avx256_p31_32(va, vb);
-      timing_now(&t[1]);
-     result[i] = timing_diff(&t[1],&t[0]);
+
+
+
     
     _mm256_store_si256((__m256i *) &c[0+i*8], vc);
 
-   
+    timing_now(&t[1]);
+    result[i] = timing_diff(&t[1],&t[0]);
     
   }
 
@@ -246,7 +249,7 @@ int main()
   printf("mean: %g, std: %g, min: %g, max: %g, nb: %d, nb2: %d\n",  mean, sqrt(std_sq/(nb2-1)), min, max, nb, nb2);
 
 
-  for (int i=NR_RUNS-20; i<NR_RUNS; i++)
+  for (int i=NR_RUNS-40; i<NR_RUNS; i++)
     {
       printf("%g ", result[i]);
     }
