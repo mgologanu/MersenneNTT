@@ -1,22 +1,28 @@
 #include<stdint.h>
 #include <stdio.h>
-
+#include <math.h>
 
 #include<immintrin.h>
 #include <stdalign.h>
 
+#include "timing.h"
 
 
-#include "cpucycles.h"
-#include "speed_print.h"
+/* #include "cpucycles.h" */
+/* #include "speed_print.h" */
 
-#define N_TESTS 100000000
+/* #define N_TESTS 100000000 */
 
-uint64_t t[N_TESTS];
+/* uint64_t t[N_TESTS]; */
 
 
+#define NR_RUNS 125*8*100000
+
+#define N  NR_RUNS*8
 
 #define PRIME_64 2147483647UL
+
+#define VAL_MAX 100
 
 __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
 {
@@ -84,22 +90,30 @@ __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
 int main()
 {
 
+
+  
+  timing start;
+  timing finish;
+  timing t[2];
+
+  
+  double * result = (double *) malloc(NR_RUNS*sizeof(double));
+  
+  
+
+  
   //_Alignas(32) int32_t a[8*N_TESTS];
   //_Alignas(32) int32_t b[8*N_TESTS];
   //_Alignas(32) int32_t c[8*N_TESTS];
 
-  uint32_t * a = aligned_alloc(32, 8*N_TESTS*sizeof(uint32_t));
-  uint32_t * b = aligned_alloc(32, 8*N_TESTS*sizeof(uint32_t));
-  uint32_t * c = aligned_alloc(32, 8*N_TESTS*sizeof(uint32_t));
-
-  int32_t *pa, *pb, *pc;
-  
-  int64_t cc[4];
+  uint32_t * a = aligned_alloc(32, N*sizeof(uint32_t));
+  uint32_t * b = aligned_alloc(32, N*sizeof(uint32_t));
+  uint32_t * c = aligned_alloc(32, N*sizeof(uint32_t));
 
   int32_t p=2147483647;
 
 
-  for (int i= 0; i<8*N_TESTS; i++)
+  for (int i= 0; i<N; i++)
     {
       a[i] = (p-1)-i;
       b[i] = i+1;
@@ -109,32 +123,25 @@ int main()
   __m256i va, vb, vc;
 
 
-  pa = a;
-  pb = b;
-  pc = c;
-
-  for (int i = 0; i < N_TESTS; i++)
+  for (int i = 0; i < NR_RUNS; i++)
   {
 
-    //Start measuring speed
       
 
     //  t[i] = cpucycles();
 
-  
-      
     va = _mm256_load_si256((__m256i *) &a[0+i*8]);
     
     vb = _mm256_load_si256((__m256i *) &b[0+i*8]);
     
-    
+    timing_now(&t[0]);
     vc = mul_mod_mersenne_avx256_p31_32(va, vb);
+    timing_now(&t[1]);
+    result[i] = timing_diff(&t[1],&t[0]);
     
     _mm256_store_si256((__m256i *) &c[0+i*8], vc);
-    
-    //    pa = pa + 8;
-    // pb = pb + 8;
-    // pc = pc + 8;
+
+   
     
   }
 
@@ -160,11 +167,65 @@ int main()
   /* printf("\n"); */
   
   
- for (int i= 8*(N_TESTS-1); i<8*N_TESTS; i++)
+ for (int i= 8*(NR_RUNS-1); i<8*NR_RUNS; i++)
     {
         printf("%d, ", c[i]);
     }
   printf("\n");
+
+  
+  double mean = 0;
+  double min = result[0];
+  double max = result[0];
+
+  int nb = 0;
+  int nb2 = 0;
+  
+  for (int i=0; i<NR_RUNS; i++)
+    {
+      if (result[i] < 0 || result[i] > VAL_MAX)
+	{
+
+	}
+      else
+	{
+	  nb = nb + 1;
+	  mean = mean +  result[i];
+	  if (result[i] < min) min = result[i];
+	  if (result[i] > max) max = result[i];
+	}
+    }
+  mean = mean/nb;
+
+  double std_sq = 0;
+  for (int i=0; i<NR_RUNS; i++)
+    {
+      if (result[i] < 0 || result[i] > VAL_MAX)
+	{
+
+	}
+      else
+	{
+	  nb2 = nb2 + 1;
+	  std_sq = std_sq + (result[i]-mean)*(result[i]-mean);
+	}
+    }
+  
+  printf("mean: %g, std: %g, min: %g, max: %g, nb: %d, nb2: %d\n",  mean, sqrt(std_sq/(nb2-1)), min, max, nb, nb2);
+
+
+  for (int i=0; i<NR_RUNS; i++)
+    {
+      if (result[i] < 0 || result[i] > VAL_MAX)
+	{
+	  
+	}
+      else
+	{
+	  //  printf("%g\n", result[i]);
+	}
+    }
+
 
   
   /* for (int i= 0; i<N_TESTS; i++) */
