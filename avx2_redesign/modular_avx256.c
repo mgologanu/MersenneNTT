@@ -214,6 +214,15 @@ int main()
   printf("mean: %g, std: %g, min: %g, max: %g, nb: %d, nb2: %d\n",  mean, sqrt(std_sq/(nb2-1)), min, max, nb, nb2);
 
 
+
+  for (int i=NR_RUNS-40; i<NR_RUNS; i++)
+    {
+      printf("%g ", result[i]);
+    }
+
+  printf("\n");
+
+  /*
   for (int i=0; i<NR_RUNS; i++)
     {
       if (result[i] < 0 || result[i] > VAL_MAX)
@@ -226,7 +235,7 @@ int main()
 	}
     }
 
-
+  */
   
   /* for (int i= 0; i<N_TESTS; i++) */
   /*   { */

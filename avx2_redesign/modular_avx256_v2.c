@@ -28,6 +28,7 @@
 
 #define VAL_MAX 100
 
+static inline __attribute__((always_inline))
 __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
 {
   /*
@@ -46,7 +47,7 @@ __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
     
   */    
 
-  const __m256i p64 = _mm256_set1_epi64x(PRIME_64);
+  //const __m256i p64 = _mm256_set1_epi64x(PRIME_64);
 
   const __m256i p32 = _mm256_set1_epi32(PRIME_32);
   
@@ -76,6 +77,7 @@ __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
   __m256i lo1 = _mm256_or_si256(_mm256_and_si256(prod_even,lo_mask), lo_odd);
 
   __m256i lo =  _mm256_and_si256(lo1, p32);
+
   
   __m256i t3 =  _mm256_add_epi32(lo,hi);
   
@@ -92,6 +94,43 @@ __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
   
 
 }
+
+
+static inline __attribute__((always_inline))
+void complex_mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b, __m256i c, __m256i s, __m256i * re, __m256i *im)
+{
+
+  const __m256i p32 = _mm256_set1_epi32(PRIME_32);
+  
+  __m256i ac = mul_mod_mersenne_avx256_p31_32(a, c);
+  __m256i as = mul_mod_mersenne_avx256_p31_32(a, s);
+  __m256i bc = mul_mod_mersenne_avx256_p31_32(b, c);
+  __m256i bs = mul_mod_mersenne_avx256_p31_32(b, s);
+
+  
+  __m256i t3 =  _mm256_add_epi32(as,bc);
+  __m256i t1 =  _mm256_and_si256(t3, p32);
+  __m256i t2 = _mm256_srli_epi32(t3, 31);
+
+  t3  = _mm256_add_epi32(t1,t2);
+  
+  
+  *im =  _mm256_and_si256(t3, p32);
+
+  __m256i minus_bs = _mm256_xor_si256(bs, _mm256_set1_epi32(-1));
+  
+  t3 =  _mm256_add_epi32(ac,minus_bs);
+  t1 =  _mm256_and_si256(t3, p32);
+  t2 = _mm256_srli_epi32(t3, 31);
+
+  t3  = _mm256_add_epi32(t1,t2);
+
+  
+  *re =  _mm256_and_si256(t3, p32);
+
+  return;
+}
+
 
 
 int main()
@@ -115,8 +154,16 @@ int main()
 
   uint32_t * a = aligned_alloc(32, N*sizeof(uint32_t));
   uint32_t * b = aligned_alloc(32, N*sizeof(uint32_t));
-  uint32_t * c = aligned_alloc(32, N*sizeof(uint32_t));
+  uint32_t * d = aligned_alloc(32, N*sizeof(uint32_t));
 
+  uint32_t * c = aligned_alloc(32, N*sizeof(uint32_t));
+  uint32_t * s = aligned_alloc(32, N*sizeof(uint32_t));
+
+  uint32_t * re = aligned_alloc(32, N*sizeof(uint32_t));
+  uint32_t * im = aligned_alloc(32, N*sizeof(uint32_t));
+ 
+
+  
   int32_t p=2147483647;
 
 
@@ -126,8 +173,14 @@ int main()
       b[i] = i+1;
     }
 
+  for (int i= 0; i<N; i++)
+    {
+      c[i] = (p-1)/2-i;
+      s[i] = 2*i;
+    }
 
-  __m256i va, vb, vc;
+
+  __m256i va, vb, vd, vc, vs, vre, vim;
 
 
   for (int i = 0; i < NR_RUNS; i++)
@@ -138,18 +191,35 @@ int main()
 
     //  t[i] = cpucycles();
 
+    
+        
     timing_now(&t[0]);
+
+  
     va = _mm256_load_si256((__m256i *) &a[0+i*8]);
     
     vb = _mm256_load_si256((__m256i *) &b[0+i*8]);
+
+    vc = _mm256_load_si256((__m256i *) &c[0+i*8]);
+
+    vs = _mm256_load_si256((__m256i *) &s[0+i*8]);
     
-  
-    vc = mul_mod_mersenne_avx256_p31_32(va, vb);
+
+    //vd = mul_mod_mersenne_avx256_p31_32(va, vb);
+    //vc = mul_mod_mersenne_avx256_p31_32(va, vc);
+    //vc = mul_mod_mersenne_avx256_p31_32(vb, vc);
+    //vc = mul_mod_mersenne_avx256_p31_32(va, vc);
+
+    complex_mul_mod_mersenne_avx256_p31_32(va, vb, vc, vs, &vre, &vim);
+    
+
+
 
 
 
     
-    _mm256_store_si256((__m256i *) &c[0+i*8], vc);
+    _mm256_store_si256((__m256i *) &re[0+i*8], vre);
+    _mm256_store_si256((__m256i *) &im[0+i*8], vim);
 
     timing_now(&t[1]);
     result[i] = timing_diff(&t[1],&t[0]);
@@ -204,7 +274,7 @@ int main()
   
  for (int i= 8*(NR_RUNS-1); i<8*NR_RUNS; i++)
     {
-        printf("%d, ", c[i]);
+      printf("(%d, %d)  ", re[i], im[i]);
     }
   printf("\n");
 
