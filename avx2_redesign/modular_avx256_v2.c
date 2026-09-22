@@ -16,7 +16,7 @@
 /* uint64_t t[N_TESTS]; */
 
 
-#define NR_RUNS 125*8*100000
+#define NR_RUNS 125*8*10000
 
 //#define NR_RUNS 1
 
@@ -27,6 +27,58 @@
 #define PRIME_32 2147483647
 
 #define VAL_MAX 100
+
+
+
+
+static inline __attribute__((always_inline))
+__m256i add_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
+{
+
+  __m256i t1, t2, t3, res;
+
+  const __m256i p32 = _mm256_set1_epi32(PRIME_32);
+  
+  t3 = _mm256_add_epi32(a,b);
+  
+  t1 = _mm256_and_si256(t3, p32);
+
+  t2 = _mm256_srli_epi32(t3, 31);
+  
+  t3  = _mm256_add_epi32(t1,t2);
+    
+  res = _mm256_and_si256(t3, p32);
+  
+  return res;
+  
+}
+
+
+static inline __attribute__((always_inline))
+__m256i sub_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
+{
+
+  __m256i t1, t2, t3, res;
+
+  const __m256i p32 = _mm256_set1_epi32(PRIME_32);
+    
+  __m256i minus_b = _mm256_xor_si256(b, _mm256_set1_epi32(-1));
+  
+  t3 = _mm256_add_epi32(a,minus_b);
+  
+  t1 = _mm256_and_si256(t3, p32);
+
+  t2 = _mm256_srli_epi32(t3, 31);
+  
+  t3  = _mm256_add_epi32(t1,t2);
+    
+  res = _mm256_and_si256(t3, p32);
+  
+  return res;
+  
+}
+
+
 
 static inline __attribute__((always_inline))
 __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
@@ -41,7 +93,6 @@ __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
     Note: Accepting double zero where a and/or b = p = 2^31-1.
     
     Output: Unsigned reminder mod 2^31-1
-
 
     Widening multiplication, followed by 2 additions for a full reduction
     
@@ -60,8 +111,6 @@ __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
   
   __m256i prod_odd = _mm256_mul_epu32(a_odd, b_odd);
   
-
-
   __m256i hi_even = _mm256_srli_epi64(prod_even, 31);                       
   __m256i hi_odd  = _mm256_slli_epi64(_mm256_srli_epi64(prod_odd, 31), 32); 
     
@@ -69,7 +118,6 @@ __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
 
 
   __m256i lo_odd = _mm256_slli_epi64(prod_odd, 32);
-
   
   const __m256i lo_mask = _mm256_setr_epi32(-1,  0, -1,  0, -1,  0, -1,  0); 
 
@@ -79,18 +127,7 @@ __m256i mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b)
   __m256i lo =  _mm256_and_si256(lo1, p32);
 
   
-  __m256i t3 =  _mm256_add_epi32(lo,hi);
-  
-  __m256i t1 = _mm256_and_si256(t3, p32);
-  __m256i t2 = _mm256_srli_epi32(t3, 31);
-  
-  t3  = _mm256_add_epi32(t1,t2);
-  
-  
-  __m256i res =  _mm256_and_si256(t3, p32);
-  
-  
-  return res;
+  return  add_mod_mersenne_avx256_p31_32(lo, hi);
   
 
 }
@@ -107,26 +144,9 @@ void complex_mul_mod_mersenne_avx256_p31_32(__m256i a, __m256i b, __m256i c, __m
   __m256i bc = mul_mod_mersenne_avx256_p31_32(b, c);
   __m256i bs = mul_mod_mersenne_avx256_p31_32(b, s);
 
-  
-  __m256i t3 =  _mm256_add_epi32(as,bc);
-  __m256i t1 =  _mm256_and_si256(t3, p32);
-  __m256i t2 = _mm256_srli_epi32(t3, 31);
+  *re =  sub_mod_mersenne_avx256_p31_32(ac, bs);
 
-  t3  = _mm256_add_epi32(t1,t2);
-  
-  
-  *im =  _mm256_and_si256(t3, p32);
-
-  __m256i minus_bs = _mm256_xor_si256(bs, _mm256_set1_epi32(-1));
-  
-  t3 =  _mm256_add_epi32(ac,minus_bs);
-  t1 =  _mm256_and_si256(t3, p32);
-  t2 = _mm256_srli_epi32(t3, 31);
-
-  t3  = _mm256_add_epi32(t1,t2);
-
-  
-  *re =  _mm256_and_si256(t3, p32);
+  *im = add_mod_mersenne_avx256_p31_32(as, bc);
 
   return;
 }
