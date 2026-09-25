@@ -512,6 +512,68 @@ MU_TEST(test_rot15_random) {
 }
 
 
+MU_TEST(test_rot) {
+
+  const int vn = 4;
+  const int n  = 8*vn;
+
+  int k = 24;
+  
+  __m256i va,  vc;
+  
+  uint32_t * a = aligned_alloc(32, n*sizeof(uint32_t));
+
+  uint32_t * c = aligned_alloc(32, n*sizeof(uint32_t));
+
+  uint32_t * c_expected = aligned_alloc(32, n*sizeof(uint32_t));
+
+  int32_t p = MRSN_PRIME;
+
+  for (int i= 0; i<8; i++)
+    {
+      a[i] = (p-1)-i+1;
+    }
+
+  for (int i= 0; i<8; i++)
+    {
+      a[i+8] = (p-1)/2-i+1;
+    }
+
+  for (int i= 0; i<8; i++)
+    {
+      a[i+2*8] = i; 
+    }
+
+  for (int i= 0; i<8; i++)
+    {
+      a[i+3*8] = (p-1)/2+i; 
+    }
+    
+  for (int j = 0; j < vn; j++)
+    {
+      va = _mm256_load_si256((__m256i *) &a[0 + j*8]);
+      
+ 
+  
+      vc = rot(va, k);
+  
+      _mm256_store_si256((__m256i *) &c[0 + j*8], vc);
+    }
+  
+  for  (int i = 0; i<n; i++)
+    {
+      c_expected[i] = ((int64_t) a[i] <<k) % (int64_t) p;
+    }
+  
+  for (int i= 0; i<n; i++)
+    {
+      //  printf("%d %d \n", c[i], c_expected[i]);
+      mu_assert(c[i] == c_expected[i] || (c[i]==p && c_expected[i] == 0), "Mul gresit");
+    }
+  //    printf("\n");
+}
+
+
 
 
 MU_TEST_SUITE(test_suite) {
@@ -523,6 +585,7 @@ MU_TEST_SUITE(test_suite) {
   MU_RUN_TEST(test_mul_random);
   MU_RUN_TEST(test_rot15);
   MU_RUN_TEST(test_rot15_random);
+  MU_RUN_TEST(test_rot);
 }
 
 int main(int argc, char *argv[]) {

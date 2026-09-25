@@ -114,4 +114,50 @@ __m256i rot15(__m256i a)
   return res;
 }
 
+
+
+static inline __attribute__((always_inline))
+__m256i rot(__m256i a, int k)
+{
+  //   return ((x << k) | (x >> 31-k)) & 0x7FFFFFFF;
+
+  __m256i t1, t2, t3, res;
+
+  int km =  MRSN_PRIME_POW - k;
+
+  const __m256i p = _mm256_set1_epi32(MRSN_PRIME);
+   
+  t1 = _mm256_slli_epi32(a, k);
+
+  t2 = _mm256_srli_epi32(a, km);
+
+  t3 = _mm256_or_si256(t1, t2);
+
+  res =  _mm256_and_si256(t3, p);
+
+  return res;
+}
+
 #endif
+
+
+static inline __attribute__((always_inline))
+bf1(__m256i * a_re, __m256i * a_im, __m256i * b_re, __m256i * b_im)
+{
+  /*
+    a = a + b
+    b = a - b
+  */
+
+  __m256i t1, t2;
+  
+  t1    = add(*a_re, *b_re);
+  *b_re = sub(*a_re, *b_re);
+  *a_re = t1;
+
+  t2    = add(*a_im, *b_im);
+  *b_im = sub(*a_im, *b_im);
+  *a_im = t2;
+
+}
+
