@@ -162,15 +162,15 @@ void cspass_sr8(int32_t *a,  const int32_t  *w,  const int32_t *w2, const int32_
 
     twister2(Ar, Ai, Br, Bi, c2, s2, b, b1, b6, b7);
 
-    /*
-    t0 = mul(c, c2);
-    t1 = mul(s, s2);
-    t2 = mul(c, s2);
-    t3 = mul(s, c2);
     
-    c3 = sub(t0, t1);
-    s3 = add(t2, t3);
-    */
+    /* t0 = mul(c, c2); */
+    /* t1 = mul(s, s2); */
+    /* t2 = mul(c, s2); */
+    /* t3 = mul(s, c2); */
+    
+    /* c3 = sub(t0, t1); */
+    /* s3 = add(t2, t3); */
+    
 
     
     c3 = _mm256_load_si256((__m256i *) &w3[0]);
