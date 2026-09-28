@@ -3,7 +3,7 @@ CC = gcc
 
 LIB =
 
-LIB_SOURCES = cspass_srl8.c
+LIB_SOURCES = cspass_sr8.c cspass_sr4.c
 
 LIB_OBJECTS =  $(LIB_SOURCES:.c=.o)
 

@@ -14,7 +14,7 @@
 #include "mrsn_avx2_internal.h"
 
 
-#define MRSN_PRIME 2147483647
+//#define MRSN_PRIME 2147483647
 
 MU_TEST(test_add) {
 

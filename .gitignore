@@ -5,6 +5,7 @@ timing.h
 exe*
 a.out
 *.exe
+*.s
 
 # Verilator and synlig
 
