@@ -1,0 +1,66 @@
+{
+  "basicInfo": {
+    "ipName": "Number theoretic transform (NTT) accelerator",
+    "licensing": "Open-source (GPLv3.0)",
+    "targetFpgaOrAsic": "",
+    "designLanguage": ""
+  },
+  "architecture": {
+    "type": "",
+    "numClockDomains": 1,
+    "controlInterface": {
+      "isaExtension": "Y",
+      "memoryMapped": "N",
+      "protocol": "CV-X-IF"
+    },
+    "memoryInterface": {
+      "interfaceProtocol": "CV-X-IF",
+      "cached": "N",
+      "iommu": "N"
+    },
+    "interrupts": "N"
+  },
+  "microarchitecture": {
+    "parametrization": {
+      "parametricNumUnits": "N",
+      "parametricConfig": "N"
+    },
+    "programmability": {
+      "programmableCores": "N",
+      "isaExtension": "RISC-V(RV32/64IMC-zicsr)"
+    }
+  },
+  "software": {
+    "compiler": {
+      "requiresSpecializedCompiler": "Y"
+    },
+    "hardwareAbstractionLayer": {
+      "halFunctions": "N/A"
+    },
+    "highLevelApi": {
+      "hasHighLevelApi": "N",
+      "sdkRepository": "N/A",
+      "hasDomainSpecificCompiler": "N"
+    }
+  },
+  "integration": {
+    "ipDistribution": {
+      "manifestType": "Bender.yml",
+      "standaloneSimulation": "Y",
+      "standaloneSimulationSwRequirements": "QuestaSim",
+      "integrationDocsOrExamples": "https://github.com/alex2kameboss/MatrixAcceleratorDemo.git"
+    },
+    "synthesis": {
+      "isSynthesizable": "Y",
+      "fpgaSynthesisExamples": "Y (Bender and custom scripts)",
+      "asicSynthesisExamples": "N"
+    },
+    "simulation": {
+      "closedSourceSimulation": "Y (QuestaSim)",
+      "openSourceSimulation": "N"
+    },
+    "evaluation": {
+      "ppaResultsAvailable": "Y, synthesis results, runtime"
+    }
+  }
+}
